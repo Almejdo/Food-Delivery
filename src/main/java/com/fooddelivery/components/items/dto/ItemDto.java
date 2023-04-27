@@ -3,7 +3,6 @@ package com.fooddelivery.components.items.dto;
 
 import lombok.*;
 
-import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor

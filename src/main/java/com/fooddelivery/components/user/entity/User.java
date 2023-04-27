@@ -2,11 +2,7 @@ package com.fooddelivery.components.user.entity;
 
 
 import com.fooddelivery.components.cart.entity.Cart;
-import com.fooddelivery.components.order.entity.Order;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,7 +13,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+
 
 
 @Entity
@@ -38,19 +34,15 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
 
-//    @OneToOne
-//    @JoinColumn(name = "delivery_man",referencedColumnName = "id")
-//    private Order delivery;
-
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
     private String password;
-
+    @ToString.Exclude
     @OneToOne(mappedBy = "user")
-    private Cart cart;
+    private Cart cart = new Cart();
 
     @CreatedDate
     private LocalDateTime createdAt;

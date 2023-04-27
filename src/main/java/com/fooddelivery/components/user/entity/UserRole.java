@@ -11,7 +11,9 @@ public enum UserRole {
     CUSTOMER("CUSTOMER"),
     ADMIN("ADMIN"),
 
-    CHEF("CHEF");
+    CHEF("CHEF"),
+
+    DELIVERY_MAN("DELIVERY_MAN");
 
     private String value;
 

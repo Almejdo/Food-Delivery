@@ -23,6 +23,7 @@ public class OrderMapper {
                 .orderStatus(order.getDeliveryStatus().getValue())
                 .items(order.getOrderItems()!=null?order.getOrderItems().stream()
                         .map(OrderMapper::toDto).collect(Collectors.toList()) : null)
+
                  .build();
     }
 
@@ -42,6 +43,7 @@ public class OrderMapper {
         return o;
     }
 
+
     private static Double getPrice(CartItem item) {
         if (item.getItem() != null)
             return item.getItem().getPrice();
@@ -56,8 +58,33 @@ public class OrderMapper {
                 .itemDto(item.getItem()!=null?ItemMapper.toDto(item.getItem()):null)
                 .build();
     }
+    public static Bill generateBill(User u) {
+        return Bill.builder()
+                .id(u.getId())
+                .date(LocalDate.now())
+        .customerName(u.getName())
+                .items(u.getCart().getCartItems().stream().map(item -> {
+                    OrderItem i = new OrderItem();
+                    i.setQuantity(item.getQuantity());
+                    i.setItem(item.getItem());
+                    i.setPrice(getPrice(item));
+                    return i;
+                }).collect(Collectors.toList()))
+                .totalAmount(u.getCart().getCartItems().stream()
+                .map(i-> (i.getItem().getPrice() * i.getQuantity()))
+                .mapToDouble(Double::doubleValue).sum())
+        .build();
+    }
 
-
-
+    public static BillDto billDto(Bill b){
+        return BillDto.builder()
+                .date(LocalDate.now())
+                .id(b.getId())
+                .customerName(b.getCustomerName())
+                .items(b.getItems()!=null?b.getItems().stream()
+                        .map(OrderMapper::toDto).collect(Collectors.toList()) : null)
+                .totalAmount(b.getTotalAmount())
+                .build();
+    }
 
 }

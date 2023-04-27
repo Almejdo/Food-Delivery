@@ -1,6 +1,9 @@
 package com.fooddelivery.components.user.service.impl;
 
 
+import com.fooddelivery.components.order.dto.DeliveryManDto;
+import com.fooddelivery.components.order.entity.DeliveryMan;
+import com.fooddelivery.components.order.repository.DeliveryManRepository;
 import com.fooddelivery.components.user.dto.UserDto;
 import com.fooddelivery.components.user.dto.UserUpdateDto;
 import com.fooddelivery.components.user.dto.mapper.UserMapper;
@@ -10,6 +13,7 @@ import com.fooddelivery.components.user.repository.UserRepository;
 import com.fooddelivery.components.user.service.UserService;
 import com.fooddelivery.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -26,15 +30,16 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DeliveryManRepository deliveryManRepository;
 
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        return userRepository
-//                .findByUsername(username)
-//                .orElseThrow(
-//                        () -> new UsernameNotFoundException(
-//                                format("User with username - %s, not found", username)));
-//    }
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository
+                .findByEmail(username)
+                .orElseThrow(
+                        () -> new UsernameNotFoundException(
+                                format("User with username - %s, not found", username)));
+    }
 
     @Override
     public User findById(Integer id) {
@@ -73,17 +78,25 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(()-> new ResourceNotFoundException(format("User with email- %s, not found",email)));
     }
 
-    @Override
-    public User loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository
-                .findByUsername(username)
-                .orElseThrow(
-                        () -> new UsernameNotFoundException(
-                                format("User with username - %s, not found", username)));
-    }
+//    @Override
+//    public User loadUserByUsername(String username) throws UsernameNotFoundException {
+//        return userRepository
+//                .findByUsername(username)
+//                .orElseThrow(
+//                        () -> new UsernameNotFoundException(
+//                                format("User with username - %s, not found", username)));
+//    }
     @Override
     public User getUserFromToken(Jwt jwt) {
         String sub = (String) jwt.getClaims().get("sub");
         return userRepository.findByEmail(sub).get();
+    }
+    @Override
+    public DeliveryManDto registerDeliveryMan(DeliveryManDto req, String userRole) {
+        DeliveryMan d = UserMapper.deliveryManEntity(req);
+        d.setRole(userRole!=null? UserRole.fromValue(userRole):UserRole.DELIVERY_MAN);
+        d.setPassword(passwordEncoder.encode(req.getPassword()));
+        d = deliveryManRepository.save(d);
+        return UserMapper.deliveryManDto(d);
     }
 }

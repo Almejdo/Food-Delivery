@@ -1,13 +1,13 @@
 package com.fooddelivery.auth;
 
 
+import com.fooddelivery.components.order.dto.DeliveryManDto;
 import com.fooddelivery.components.user.dto.UserDto;
 import com.fooddelivery.components.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,14 +17,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -78,6 +74,10 @@ public class AuthController {
   @PostMapping("/register")
   public ResponseEntity<UserDto> registerUser(@RequestBody @Valid UserDto u){
     return ResponseEntity.ok(userService.registerUser(u,null));
+  }
+  @PostMapping("/register/delivery-man")
+  public ResponseEntity<DeliveryManDto> registerDeliveryMan(@RequestBody @Valid DeliveryManDto d){
+    return ResponseEntity.ok(userService.registerDeliveryMan(d,null));
   }
 
 

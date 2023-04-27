@@ -1,6 +1,6 @@
 package com.fooddelivery.components.items.entity;
 
-import com.fooddelivery.components.order.entity.Order;
+
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 

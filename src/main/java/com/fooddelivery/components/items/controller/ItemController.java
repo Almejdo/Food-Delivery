@@ -39,7 +39,7 @@ public class ItemController {
     }
 
     @RolesAllowed("CHEF")
-    @PutMapping("/chef/{itemId} ")
+    @PutMapping("/chef/{itemId}")
     public ResponseEntity<ItemDto> updateItem(@PathVariable Integer itemId,@RequestBody ItemDto req ){
         return ResponseEntity.ok(itemService.updateItem(itemId,req));
     }
@@ -64,6 +64,7 @@ public class ItemController {
     public ResponseEntity<ItemCategoryDto> getCategoryById(@PathVariable Integer catId){
         return ResponseEntity.ok(itemService.getCategoriesById(catId));
     }
+    @RolesAllowed("CHEF")
     @PostMapping("/chef/category")
     public ResponseEntity<ItemCategoryDto> addCategory(@RequestBody ItemCategoryDto req){
         return ResponseEntity.ok(itemService.addCategory(req));

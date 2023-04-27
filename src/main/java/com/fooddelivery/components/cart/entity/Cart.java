@@ -31,8 +31,7 @@ public class Cart {
     private User user;
     private LocalDateTime updatedAt;
 
-    @Column
-    @OneToMany(targetEntity=CartItem.class)
+    @OneToMany(mappedBy = "cart",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<CartItem> cartItems = new ArrayList<>();
 
 

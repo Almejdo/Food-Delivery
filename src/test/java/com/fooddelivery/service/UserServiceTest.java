@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -63,7 +64,7 @@ public class UserServiceTest extends BaseTest {
     @Test
     public void test_loadUserByUsername_ok(){
         Mockito.doReturn(Optional.of(new User())).when(userRepository).findByUsername(Mockito.anyString());
-        User out = toTest.loadUserByUsername(Mockito.anyString());
+        UserDetails out = toTest.loadUserByUsername(Mockito.anyString());
         assertNotNull(out);
     }
 }

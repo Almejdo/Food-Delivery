@@ -1,6 +1,5 @@
 package com.fooddelivery.components.items.entity;
 
-import com.fooddelivery.components.items.entity.Item;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +23,7 @@ public class Category {
     @GeneratedValue
     private Integer id;
     private String name;
-    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private List<Item> items;
     @CreatedDate
     private LocalDateTime createdAt;

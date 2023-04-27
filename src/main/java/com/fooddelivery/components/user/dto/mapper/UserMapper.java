@@ -2,6 +2,8 @@ package com.fooddelivery.components.user.dto.mapper;
 
 
 
+import com.fooddelivery.components.order.dto.DeliveryManDto;
+import com.fooddelivery.components.order.entity.DeliveryMan;
 import com.fooddelivery.components.user.dto.UserDto;
 import com.fooddelivery.components.user.dto.UserUpdateDto;
 import com.fooddelivery.components.user.entity.User;
@@ -51,6 +53,20 @@ public class UserMapper {
         u.setEmail(req.getEmail());
         u.setUsername(req.getUsername());
         return u;
+    }
+
+
+    public static DeliveryManDto deliveryManDto(DeliveryMan d){
+        return DeliveryManDto.builder()
+                .password(d.getPassword())
+                .email(d.getEmail())
+                .build();
+    }
+    public static DeliveryMan deliveryManEntity(DeliveryManDto d){
+        return DeliveryMan.builder()
+                .password(d.getPassword())
+                .email(d.getEmail())
+                .build();
     }
 
 

@@ -6,7 +6,6 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import lombok.RequiredArgsConstructor;
-import lombok.var;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +16,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -47,8 +45,8 @@ import static java.lang.String.format;
 @Configuration
 public class SecurityConfig {
 
-    private final UserRepository userRepo;
 
+    private final UserRepository userRepo;
 
     @Value("${jwt.public.key}")
     private RSAPublicKey rsaPublicKey;
@@ -61,12 +59,11 @@ public class SecurityConfig {
             HttpSecurity http, BCryptPasswordEncoder bCryptPasswordEncoder) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
                 .userDetailsService(username -> userRepo
-                        .findByUsername(username)
+                        .findByEmail(username)
                         .orElseThrow(
                                 () -> new UsernameNotFoundException(format("User: %s, not found", username))))
                 .passwordEncoder(bCryptPasswordEncoder)
                 .and()
-
                 .build();
     }
 
@@ -87,20 +84,15 @@ public class SecurityConfig {
         // Set permissions on endpoints
         http.authorizeRequests()
                 // Our public endpoints
-                .antMatchers("/auth/**").permitAll()
-                //.antMatchers("/admin/**").hasRole("ADMIN")
-//                .antMatchers("/chef/**").hasRole("CHEF")
+                .antMatchers("/auth/**")
+                .permitAll()
                 // Our private endpoints
                 .anyRequest()
                 .authenticated()
                 // Set up oauth2 resource server
-                 .and()
-                .logout()
-                 .logoutUrl("/logout")
-                 .logoutSuccessUrl("/login")
                 .and()
-                 .httpBasic(Customizer.withDefaults())
-                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
+                .httpBasic(Customizer.withDefaults())
+                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
 
         return http.build();
     }
@@ -112,8 +104,8 @@ public class SecurityConfig {
         ImmutableJWKSet jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwks);
     }
-//
-//    // Used by JwtAuthenticationProvider to decode and validate JWT tokens
+
+    // Used by JwtAuthenticationProvider to decode and validate JWT tokens
     @Bean
     public JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withPublicKey(this.rsaPublicKey).build();
@@ -123,7 +115,7 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("hasRole");
+        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
         jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
@@ -155,19 +147,11 @@ public class SecurityConfig {
             AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
     public static Jwt getJwt(){
+
         return (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
-
-//    ----------------------------------------------------------------------------
-//public static String getToken() {
-//    String token = null;
-//    var authentication = SecurityContextHolder.getContext().getAuthentication();
-//    if (authentication != null) {
-//        token = ((OAuth2AuthenticationDetails) authentication.getDetails()).getTokenValue();
-//    }
-//    return token;
-//}
 
 
 }

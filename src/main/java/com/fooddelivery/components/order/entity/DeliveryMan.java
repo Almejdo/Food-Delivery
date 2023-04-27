@@ -1,5 +1,6 @@
 package com.fooddelivery.components.order.entity;
 
+import com.fooddelivery.components.user.entity.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,9 +21,11 @@ public class DeliveryMan {
     @GeneratedValue
     private Integer id;
 
-    private final Integer maxOrders = 4;
+    private String email;
+
+    private String password;
     @Enumerated(EnumType.STRING)
-    private DeliveryStatus deliveryStatus;
+    private UserRole role;
 
     @OneToMany(mappedBy = "deliveryMan")
     private List<Order> orders;

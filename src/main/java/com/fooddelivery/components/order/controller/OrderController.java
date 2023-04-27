@@ -35,7 +35,7 @@ public class OrderController {
         return ResponseEntity.noContent().build();
     }
     @RolesAllowed("CHEF")
-    @PutMapping("/{orderId}/to/{deliveryManId}")
+    @PostMapping("/{orderId}/to/{deliveryManId}")
     public ResponseEntity<Void> setOrderToDeliveryMan(@PathVariable Integer orderId,@PathVariable Integer deliveryManId){
         orderService.setOrderToDeliveryMan(deliveryManId,orderId);
         return ResponseEntity.noContent().build();
@@ -57,9 +57,14 @@ public class OrderController {
     public ResponseEntity<Void> setOrderStatus(@PathVariable Integer orderId,@PathVariable String orderStatus){
         return ResponseEntity.ok(orderService.setDeliveryStatus(orderId,orderStatus));
     }
-    @GetMapping("/bill/{userId}")
-    public ResponseEntity<BillDto> generateBill(@PathVariable Integer userId){
-        return ResponseEntity.ok(orderService.generateBill(userId));
+    @GetMapping("/bill")
+    public ResponseEntity<BillDto> generateBill(@AuthenticationPrincipal Jwt jwt){
+        return ResponseEntity.ok(orderService.generateBill(jwt));
+    }
+    @RolesAllowed("CHEF")
+    @GetMapping
+    public ResponseEntity<List<OrderDto>> getOrders(){
+        return ResponseEntity.ok(orderService.getOrders());
     }
 }
 

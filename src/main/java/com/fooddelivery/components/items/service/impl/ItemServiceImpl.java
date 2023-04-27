@@ -47,9 +47,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto updateItem(Integer itemId, ItemDto req) {
-        Item i = findById(itemId);
-         i = ItemMapper.buildUpdateItem(i,req);
-         return ItemMapper.toDto(itemRepository.save(i));
+        Item i = itemRepository.findById(itemId).orElseThrow(()-> new ResourceNotFoundException(String
+                .format("Item with id %s not found",itemId)));;
+         return ItemMapper.toDto(itemRepository
+                 .save(ItemMapper.buildUpdateItem(i,req)));
     }
     @Override
     public List<ItemDto> findItemByCategoryId(Integer categoryId) {

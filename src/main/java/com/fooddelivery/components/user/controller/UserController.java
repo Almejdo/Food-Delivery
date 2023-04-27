@@ -8,7 +8,8 @@ import com.fooddelivery.components.user.entity.User;
 import com.fooddelivery.components.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -22,21 +23,21 @@ public class UserController {
 
     private final UserService userService;
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @RolesAllowed("ADMIN")
     @PostMapping("/{userRole}")
     public ResponseEntity<UserDto> registerUserRole(@RequestBody @Valid UserDto req, @PathVariable String userRole){
         UserDto dto = userService.registerUser(req,userRole);
         return ResponseEntity.ok(dto);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RolesAllowed("ADMIN")
     @PutMapping("/user/{id}")
     public ResponseEntity<UserUpdateDto> updateUser(@PathVariable Integer id, @RequestBody UserUpdateDto req){
         UserUpdateDto u = userService.updateUser(id,req);
         return ResponseEntity.ok(u);
     }
 
-    @RolesAllowed("ROLE_ADMIN")
+    @RolesAllowed("ADMIN")
     @GetMapping("/user/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Integer id){
         User u = userService.findById(id);
@@ -48,4 +49,10 @@ public class UserController {
     public ResponseEntity<List<UserDto>> getAllUsers(){
        return ResponseEntity.ok(userService.getUsers());
     }
+
+    @GetMapping()
+    public ResponseEntity<User> getUserFromToken(@AuthenticationPrincipal Jwt jwt){
+        return ResponseEntity.ok(userService.getUserFromToken(jwt));
+    }
+
 }

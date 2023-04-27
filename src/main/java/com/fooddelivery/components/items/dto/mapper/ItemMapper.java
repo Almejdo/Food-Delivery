@@ -6,6 +6,8 @@ import com.fooddelivery.components.items.entity.Category;
 import com.fooddelivery.components.items.dto.ItemDto;
 import com.fooddelivery.components.items.entity.Item;
 
+import java.time.LocalDateTime;
+
 public class ItemMapper {
 
     public static ItemDto toDto(Item i){
@@ -48,6 +50,7 @@ public class ItemMapper {
         return Category.builder()
                 .name(c.getName())
                 .id(c.getId())
+                .createdAt(LocalDateTime.now())
                 .build();
     }
     public static Category buildUpdateCategory(Category c,ItemCategoryDto req){

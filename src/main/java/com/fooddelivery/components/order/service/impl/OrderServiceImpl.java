@@ -16,10 +16,10 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +31,9 @@ public class OrderServiceImpl implements OrderService {
     private final UserService userService;
     private final DeliveryManRepository deliveryManRepository;
     private final DeliveryRepository deliveryRepository;
-    private final BillRepository billRepository;
+    private static final Integer MAX_ORDERS = 4;
+
+
 
     @Override
     public OrderDto getOrderById(Integer id) {
@@ -56,17 +58,20 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-    public Void setOrderToDeliveryMan(Integer deliveryManId,Integer orderId) {
+    public void setOrderToDeliveryMan(Integer deliveryManId,Integer orderId) {
         DeliveryMan deliveryMan = deliveryManRepository.findById(deliveryManId)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("DeliveryMan with id %s not found",deliveryManId)));
         List<Order> orders = deliveryMan.getOrders();
-        if (orders.size() >= deliveryMan.getMaxOrders()) {
+        if (orders.size() >= MAX_ORDERS) {
             throw new DeliveryManMaxOrdersReachedException();
         }
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException(String.format("Order with id %s not found",orderId)));
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Order with id %s not found",orderId)));
         order.setDeliveryMan(deliveryMan);
+        deliveryMan.getOrders().add(order);
+        deliveryManRepository.save(deliveryMan);
         orderRepository.save(order);
-        return null;
+
     }
 
 
@@ -80,10 +85,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Void setDeliveryStatus(Integer deliveryId, String status) {
-        deliveryManRepository.findById(deliveryId)
+        deliveryRepository.findById(deliveryId)
                 .map(d -> {
                     d.setDeliveryStatus(DeliveryStatus.fromValue(status));
-                    return  deliveryManRepository.save(d);
+                    return  deliveryRepository.save(d);
                 });
         return null;
     }
@@ -113,24 +118,22 @@ public class OrderServiceImpl implements OrderService {
         return deliveryRepository.save(d);
 
     }
-    public BillDto generateBill(Integer userId) {
-        Order order = orderCustomRepository.findOrderOfUserId(userId);
-        if (order == null) {
-            throw new RuntimeException("Order not found");
-        }
-
-        BillDto billDTO = new BillDto();
-        billDTO.setItems(order.getOrderItems());
-        billDTO.setCustomerName(order.getCustomerName());
-        billDTO.setBillNumber("Bill:" + order.getId());
-
-        Double totalAmount = order.getOrderItems().stream()
-                .mapToDouble(orderDetail -> orderDetail.getItem().getPrice() * orderDetail.getQuantity())
-                .sum();
-        billDTO.setTotalAmount(totalAmount);
-
-        return billDTO;
+    @Override
+    public BillDto generateBill(Jwt jwt) {
+        User u = userService.getUserFromToken(jwt);
+        Bill b = OrderMapper.generateBill(u);
+        return OrderMapper.billDto(b);
     }
+
+    @Override
+    public List<OrderDto> getOrders() {
+        return orderRepository.findAll()
+                .stream()
+                .map(p -> OrderMapper.toDto(p))
+                .collect(Collectors.toList());
+    }
+
+
 
 
     }

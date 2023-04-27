@@ -1,7 +1,7 @@
 package com.fooddelivery.components.order.entity;
 
 
-import com.fooddelivery.components.items.entity.Item;
+
 import com.fooddelivery.components.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 @NamedQueries({
         @NamedQuery(name = "findOrderOfUserId",
