@@ -11,7 +11,7 @@ import java.util.List;
 public interface OrderService {
    OrderDto getOrderById(Integer id);
    Void deleteOrder(Integer id);
-   OrderDto findOrderOfUserId(Integer userId);
+   List<OrderDto> findAllByUserEmail(String email);
 
    Void setDeliveryStatus(Integer deliveryId, String status);
    List<OrderDto> getOrdersByDeliveryMan(Integer deliveryManId);

@@ -2,6 +2,7 @@ package com.fooddelivery.components.cart.service.impl;
 
 
 import com.fooddelivery.components.cart.dto.CartDto;
+import com.fooddelivery.components.cart.dto.CartItemDto;
 import com.fooddelivery.components.cart.dto.CartItemRequest;
 import com.fooddelivery.components.cart.dto.mapper.CartMapper;
 import com.fooddelivery.components.cart.entity.Cart;
@@ -11,13 +12,12 @@ import com.fooddelivery.components.cart.repository.CartRepository;
 import com.fooddelivery.components.cart.service.CartService;
 import com.fooddelivery.components.items.repository.ItemRepository;
 import com.fooddelivery.components.user.entity.User;
+import com.fooddelivery.components.user.repository.UserRepository;
 import com.fooddelivery.components.user.service.UserService;
 import com.fooddelivery.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 import static com.fooddelivery.config.SecurityConfig.getJwt;
 @Slf4j
@@ -28,6 +28,7 @@ public class CartServiceImpl implements CartService {
     private final CartItemRepository cartItemRepository;
     private final CartRepository cartRepository;
     private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
 
     @Override
     public CartDto getCart() {
@@ -55,9 +56,18 @@ public class CartServiceImpl implements CartService {
     @Override
     public CartDto removeItem(Integer itemId) {
         User user = userService.getUserFromToken(getJwt());
-        cartItemRepository.deleteById(itemId);
-        return CartMapper.toDto(cartRepository
-                .findById(user.getCart().getId()).get());
+       Cart c = user.getCart();
+       CartItem item = cartItemRepository.findById(itemId).orElseThrow(() -> new ResourceNotFoundException(String
+                .format("CartItem with id %s not found", itemId)));
+       cartItemRepository.delete(item);
+      c.getCartItems().remove(item);
+       cartRepository.save(c);
+       user.setCart(c);
+       userRepository.save(user);
+
+        return CartMapper.toDto(c);
+
+
     }
 
     private CartItem buildItem(Cart cart, CartItemRequest req) {
@@ -72,4 +82,5 @@ public class CartServiceImpl implements CartService {
         return item;
 
     }
+
 }

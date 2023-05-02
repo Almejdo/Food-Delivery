@@ -6,7 +6,6 @@ import com.fooddelivery.components.items.repository.CategoryRepository;
 import com.fooddelivery.components.items.dto.ItemDto;
 import com.fooddelivery.components.items.dto.mapper.ItemMapper;
 import com.fooddelivery.components.items.entity.Item;
-import com.fooddelivery.components.items.repository.ItemCustomRepository;
 import com.fooddelivery.components.items.repository.ItemRepository;
 import com.fooddelivery.components.items.service.ItemService;
 import com.fooddelivery.exception.ResourceNotFoundException;
@@ -20,9 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
-    private final ItemCustomRepository itemCustomRepository;
     private final CategoryRepository categoryRepository;
-
     private final ItemRepository itemRepository;
     @Override
     public Item findById(Integer itemId) {
@@ -41,8 +38,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto addItem(ItemDto itemDto) {
-        Item i = itemRepository.save(ItemMapper.toEntity(itemDto));
-        return ItemMapper.toDto(i);
+        return ItemMapper.toDto(itemRepository.save(ItemMapper.toEntity(itemDto)));
     }
 
     @Override
@@ -54,19 +50,25 @@ public class ItemServiceImpl implements ItemService {
     }
     @Override
     public List<ItemDto> findItemByCategoryId(Integer categoryId) {
-        return itemCustomRepository.findItemByCategoryId(categoryId)
+        return categoryRepository.findItemByCategoryId(categoryId)
                 .stream().map(ItemMapper::toDto)
                 .collect(Collectors.toList());
     }
 
 
     @Override
-    public Void deleteItem(Integer itemId) {
-        Item i = itemRepository.findById(itemId)
-                .orElseThrow(()-> new ResourceNotFoundException(String
-                        .format("Item with id %s not found",itemId)));
-        itemRepository.delete(i);
-        return null;
+    public void deleteItem(Integer itemId) {
+//        Item i = itemRepository.findById(itemId)
+//                .orElseThrow(()-> new ResourceNotFoundException(String
+//                        .format("Item with id %s not found",itemId)));
+//        itemRepository.delete(i);
+//    return null;
+
+        if(itemRepository.findById(itemId) == null){
+            throw new ResourceNotFoundException(String.format("Item with id %s not found",itemId));
+        }
+        else
+            itemRepository.deleteById(itemId);
     }
 
     public List<ItemCategoryDto> getCategories() {

@@ -25,9 +25,9 @@ public class OrderController {
     public ResponseEntity<OrderDto> getOrderById(@PathVariable Integer id){
         return ResponseEntity.ok(orderService.getOrderById(id));
     }
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<OrderDto> findOrderOfUserId(@PathVariable Integer userId){
-        return ResponseEntity.ok(orderService.findOrderOfUserId(userId));
+    @GetMapping("/user/{email}")
+    public ResponseEntity<List<OrderDto>> findOrderOfUserId(@PathVariable String email){
+        return ResponseEntity.ok(orderService.findAllByUserEmail(email));
     }
     @DeleteMapping("/user/{id}")
     public ResponseEntity<Void> deleteOrder(@PathVariable Integer id){

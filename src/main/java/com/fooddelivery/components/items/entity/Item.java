@@ -8,8 +8,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 
 @NamedQueries({
-		@NamedQuery(name = "findItemByCategoryId",
-				query = "SELECT i FROM Item i WHERE i.category.id = :category_Id")
+		@NamedQuery(name = "item_findItemByCategory",
+				query = "SELECT i FROM Item i WHERE i.category.id = :categoryId")
 })
 @Entity
 @EntityListeners(AuditingEntityListener.class)

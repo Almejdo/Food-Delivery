@@ -78,7 +78,7 @@ public class ItemController {
     @DeleteMapping("/chef/category/{catId}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Integer catId){
         itemService.deleteCategory(catId);
-        return null;
+        return ResponseEntity.noContent().build();
     }
 
 

@@ -53,8 +53,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDto findOrderOfUserId(Integer userId) {
-        return OrderMapper.toDto(orderCustomRepository.findOrderOfUserId(userId)) ;
+    public List<OrderDto> findAllByUserEmail(String email) {
+        return  orderRepository.findAllByCustomerEmail(email)
+                .stream().map(OrderMapper::toDto).collect(Collectors.toList());
     }
 
 

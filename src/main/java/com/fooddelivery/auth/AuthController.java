@@ -20,6 +20,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.time.Instant;
 import java.util.Arrays;
@@ -75,6 +76,7 @@ public class AuthController {
   public ResponseEntity<UserDto> registerUser(@RequestBody @Valid UserDto u){
     return ResponseEntity.ok(userService.registerUser(u,null));
   }
+
   @PostMapping("/register/delivery-man")
   public ResponseEntity<DeliveryManDto> registerDeliveryMan(@RequestBody @Valid DeliveryManDto d){
     return ResponseEntity.ok(userService.registerDeliveryMan(d,null));
