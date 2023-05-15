@@ -21,7 +21,7 @@ public class UserDto {
     @NotNull(message = " UserName is mandatory")
     private String username;
     @NotNull(message = "Phone Number is required")
-    private String phoneNumber;
+    private Integer phoneNumber;
 
     @NotNull(message = "Email is necessary for registration")
     @Pattern(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$",message = "Please provide a valid email address")
@@ -35,6 +35,9 @@ public class UserDto {
                     "Password must contain a length of at least 8 characters and a maximum of 20 characters.")
 
     private String password;
+    @NotNull(message = "Address is required")
+    private String address;
+
     private LocalDateTime createdAt;
 
 }

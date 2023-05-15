@@ -16,8 +16,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -66,5 +69,25 @@ public class UserServiceTest extends BaseTest {
         Mockito.doReturn(Optional.of(new User())).when(userRepository).findByUsername(Mockito.anyString());
         UserDetails out = toTest.loadUserByUsername(Mockito.anyString());
         assertNotNull(out);
+    }
+
+    @Test
+    public void test_getUsers_ok(){
+        UserDto user1 = new UserDto();
+        user1.setUsername("user1");
+        user1.setEmail("user1@example.com");
+
+        UserDto user2 = new UserDto();
+        user2.setUsername("user2");
+        user2.setEmail("user2@example.com");
+
+        List<UserDto> userList = new ArrayList<>();
+
+        userList.add(user1);
+        userList.add(user2);
+
+        Mockito.when(toTest.getUsers()).thenReturn(userList);
+        List<UserDto> u = toTest.getUsers();
+        assertNotNull(u);
     }
 }

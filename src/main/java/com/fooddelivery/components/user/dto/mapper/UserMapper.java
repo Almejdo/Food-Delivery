@@ -21,6 +21,7 @@ public class UserMapper {
                 .phoneNumber(u.getPhoneNumber())
                 .email(u.getEmail())
                 .password(u.getPassword())
+                .address(u.getAddress())
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -34,6 +35,7 @@ public class UserMapper {
                 .username(u.getUsername())
                 .password(u.getPassword())
                 .createdAt(LocalDateTime.now())
+                .address(u.getAddress())
                 .build();
     }
 

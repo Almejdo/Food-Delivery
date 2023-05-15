@@ -13,7 +13,7 @@ List<ItemDto> getItem();
 ItemDto addItem(ItemDto itemDto);
 List<ItemDto> findItemByCategoryId(Integer categoryId);
 ItemDto updateItem(Integer itemId, ItemDto req);
-void deleteItem(Integer itemId);
+Void deleteItem(Integer itemId);
 ItemCategoryDto getCategoriesById(Integer id);
 ItemCategoryDto addCategory(ItemCategoryDto req);
 List<ItemCategoryDto> getCategories();

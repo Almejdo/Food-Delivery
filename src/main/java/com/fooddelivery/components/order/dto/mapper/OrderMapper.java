@@ -20,6 +20,8 @@ public class OrderMapper {
                 .id(order.getId())
                 .customerEmail(order.getCustomerEmail())
                 .customerName(order.getCustomerName())
+                .customerPhoneNumber(order.getCustomerPhoneNumber())
+                .customerAddress(order.getCustomerAddress())
                 .orderStatus(order.getDeliveryStatus().getValue())
                 .items(order.getOrderItems()!=null?order.getOrderItems().stream()
                         .map(OrderMapper::toDto).collect(Collectors.toList()) : null)
@@ -31,6 +33,8 @@ public class OrderMapper {
     public static Order buildOrder(User u, Order o) {
         o.setCustomerName(u.getName());
         o.setCustomerEmail(u.getEmail());
+        o.setCustomerPhoneNumber(u.getPhoneNumber());
+        o.setCustomerAddress(u.getAddress());
         List<OrderItem> items = u.getCart().getCartItems().stream().map(item -> {
             OrderItem i = new OrderItem();
             i.setPrice(getPrice(item));

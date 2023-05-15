@@ -1,7 +1,6 @@
 package com.fooddelivery.components.order.service.impl;
 
 import com.fooddelivery.components.order.dto.BillDto;
-import com.fooddelivery.components.order.dto.DeliveryDetailsDto;
 import com.fooddelivery.components.order.dto.OrderDto;
 import com.fooddelivery.components.order.dto.mapper.OrderMapper;
 import com.fooddelivery.components.order.entity.*;
@@ -16,7 +15,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,11 +25,10 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
 
-    private final OrderCustomRepository orderCustomRepository;
+
     private final OrderRepository orderRepository;
     private final UserService userService;
     private final DeliveryManRepository deliveryManRepository;
-    private final DeliveryRepository deliveryRepository;
     private static final Integer MAX_ORDERS = 4;
 
 
@@ -85,17 +83,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Void setDeliveryStatus(Integer deliveryId, String status) {
-        deliveryRepository.findById(deliveryId)
-                .map(d -> {
-                    d.setDeliveryStatus(DeliveryStatus.fromValue(status));
-                    return  deliveryRepository.save(d);
+    public Void setDeliveryStatus(Integer orderId, String status) {
+        orderRepository.findById(orderId)
+                .map(o -> {
+                    o.setDeliveryStatus(DeliveryStatus.fromValue(status));
+                    return  orderRepository.save(o);
                 });
         return null;
     }
     @Transactional
     @Override
-    public OrderDto processOrder(Jwt jwt, DeliveryDetailsDto details) {
+    public OrderDto processOrder(Jwt jwt) {
         User u = userService.getUserFromToken(jwt);
         Order o = orderRepository.save(new Order());
         o = OrderMapper.buildOrder(u,o);
@@ -103,22 +101,11 @@ public class OrderServiceImpl implements OrderService {
                 .mapToDouble(Double::doubleValue).sum());
         o.setDeliveryStatus(DeliveryStatus.ON_THE_ROAD);
 
-        Delivery delivery = addDelivery(details);
-        o.setDelivery(delivery);
         o = orderRepository.save(o);
 
         return OrderMapper.toDto(o);
     }
-    @Override
-    public Delivery addDelivery(DeliveryDetailsDto req) {
-        Delivery d = new Delivery();
-        d.setDeliveryAdress(req.getAddress());
-        d.setPhoneNumber(req.getPhoneNumber());
-        d.setDeliveryDate(LocalDateTime.now());
-        d.setDeliveryStatus(DeliveryStatus.PENDING);
-        return deliveryRepository.save(d);
 
-    }
     @Override
     public BillDto generateBill(Jwt jwt) {
         User u = userService.getUserFromToken(jwt);
@@ -134,10 +121,11 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
     }
 
-
-
-
     }
+
+
+
+
 
 
 

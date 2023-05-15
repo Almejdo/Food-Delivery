@@ -10,11 +10,7 @@ import java.util.Arrays;
 public enum UserRole {
     CUSTOMER("CUSTOMER"),
     ADMIN("ADMIN"),
-
-    CHEF("CHEF"),
-
-    DELIVERY_MAN("DELIVERY_MAN");
-
+    CHEF("CHEF");
     private String value;
 
     public static UserRole fromValue(String userRole){

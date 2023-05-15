@@ -34,7 +34,8 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
 
-    private String phoneNumber;
+    private Integer phoneNumber;
+    private String address;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;

@@ -93,8 +93,7 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public DeliveryManDto registerDeliveryMan(DeliveryManDto req, String userRole) {
-        DeliveryMan d = UserMapper.deliveryManEntity(req);
-        d.setRole(userRole!=null? UserRole.fromValue(userRole):UserRole.DELIVERY_MAN);
+        DeliveryMan d = UserMapper.deliveryManEntity(req);;
         d.setPassword(passwordEncoder.encode(req.getPassword()));
         d = deliveryManRepository.save(d);
         return UserMapper.deliveryManDto(d);

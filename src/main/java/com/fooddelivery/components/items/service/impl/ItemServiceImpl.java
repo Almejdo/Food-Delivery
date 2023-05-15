@@ -38,7 +38,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto addItem(ItemDto itemDto) {
-        return ItemMapper.toDto(itemRepository.save(ItemMapper.toEntity(itemDto)));
+        Item i = itemRepository.save(ItemMapper.toEntity(itemDto));
+        return ItemMapper.toDto(i);
     }
 
     @Override
@@ -57,18 +58,13 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
-    public void deleteItem(Integer itemId) {
-//        Item i = itemRepository.findById(itemId)
-//                .orElseThrow(()-> new ResourceNotFoundException(String
-//                        .format("Item with id %s not found",itemId)));
-//        itemRepository.delete(i);
-//    return null;
+    public Void deleteItem(Integer itemId) {
+        Item i = itemRepository.findById(itemId)
+                .orElseThrow(()-> new ResourceNotFoundException(String
+                        .format("Item with id %s not found",itemId)));
+        itemRepository.delete(i);
+        return null;
 
-        if(itemRepository.findById(itemId) == null){
-            throw new ResourceNotFoundException(String.format("Item with id %s not found",itemId));
-        }
-        else
-            itemRepository.deleteById(itemId);
     }
 
     public List<ItemCategoryDto> getCategories() {

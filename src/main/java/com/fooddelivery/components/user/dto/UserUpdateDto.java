@@ -23,7 +23,7 @@ public class UserUpdateDto {
     private String username;
     @NotNull
     @NotBlank(message = "PhoneNumber is mandatory")
-    private String phoneNumber;
+    private Integer phoneNumber;
 
     @NotNull
     @NotBlank(message = "Email is necessary for registration")

@@ -22,11 +22,7 @@ public class DeliveryMan {
     private Integer id;
 
     private String email;
-
     private String password;
-    @Enumerated(EnumType.STRING)
-    private UserRole role;
-
     @OneToMany(mappedBy = "deliveryMan")
     private List<Order> orders;
 

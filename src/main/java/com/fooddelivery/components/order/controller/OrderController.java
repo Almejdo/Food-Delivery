@@ -2,7 +2,6 @@ package com.fooddelivery.components.order.controller;
 
 
 import com.fooddelivery.components.order.dto.BillDto;
-import com.fooddelivery.components.order.dto.DeliveryDetailsDto;
 import com.fooddelivery.components.order.dto.OrderDto;
 import com.fooddelivery.components.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,7 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrderById(id));
     }
     @GetMapping("/user/{email}")
-    public ResponseEntity<List<OrderDto>> findOrderOfUserId(@PathVariable String email){
+    public ResponseEntity<List<OrderDto>> findOrderOfUserEmail(@PathVariable String email){
         return ResponseEntity.ok(orderService.findAllByUserEmail(email));
     }
     @DeleteMapping("/user/{id}")
@@ -48,8 +47,8 @@ public class OrderController {
   }
 
     @PostMapping
-    public ResponseEntity<OrderDto> createOrder(@AuthenticationPrincipal Jwt jwt, @RequestBody DeliveryDetailsDto d){
-        return ResponseEntity.ok(orderService.processOrder(jwt,d));
+    public ResponseEntity<OrderDto> createOrder(@AuthenticationPrincipal Jwt jwt){
+        return ResponseEntity.ok(orderService.processOrder(jwt));
     }
 
     @RolesAllowed("CHEF")

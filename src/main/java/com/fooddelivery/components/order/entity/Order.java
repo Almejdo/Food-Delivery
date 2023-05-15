@@ -37,6 +37,8 @@ public class Order {
 
     private String customerName;
     private String customerEmail;
+    private Integer customerPhoneNumber;
+    private String customerAddress;
 
     @OneToMany(mappedBy = "order",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<OrderItem> orderItems;

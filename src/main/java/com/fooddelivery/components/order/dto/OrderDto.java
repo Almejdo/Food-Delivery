@@ -19,5 +19,7 @@ public class OrderDto {
     private String customerName;
     private String customerEmail;
     private String orderStatus;
+    private Integer customerPhoneNumber;
+    private String customerAddress;
 
 }

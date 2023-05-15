@@ -1,9 +1,7 @@
 package com.fooddelivery.components.order.service;
 
 import com.fooddelivery.components.order.dto.BillDto;
-import com.fooddelivery.components.order.dto.DeliveryDetailsDto;
 import com.fooddelivery.components.order.dto.OrderDto;
-import com.fooddelivery.components.order.entity.Delivery;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.List;
@@ -16,8 +14,7 @@ public interface OrderService {
    Void setDeliveryStatus(Integer deliveryId, String status);
    List<OrderDto> getOrdersByDeliveryMan(Integer deliveryManId);
     void setOrderToDeliveryMan(Integer deliveryManId,Integer orderId);
-   OrderDto processOrder(Jwt jwt, DeliveryDetailsDto details);
-   Delivery addDelivery(DeliveryDetailsDto req);
+   OrderDto processOrder(Jwt jwt);
    BillDto generateBill(Jwt jwt);
    List<OrderDto> getOrders();
 
